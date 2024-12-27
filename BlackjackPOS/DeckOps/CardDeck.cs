@@ -3,6 +3,10 @@
 public class CardDeck
 {
 
-    
+    public CardDeck()
+    {
+        
+        // constructor
+    }
     
 }
