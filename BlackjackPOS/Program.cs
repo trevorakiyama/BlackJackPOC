@@ -1,3 +1,12 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿namespace BlackjackPOS;
 
-Console.WriteLine("Hello, World!");
+public static class BlackjackPos
+{
+
+    static void Main()
+    {  
+
+        Console.WriteLine("hello world");
+    }
+    
+}
