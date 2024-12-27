@@ -1,0 +1,14 @@
+# Rider specific files
+.idea/
+
+# User-specific configuration files
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/vcs.xml
+.idea/caches/
+
+# .NET specific files created by Rider
+bin/
+obj/
+
