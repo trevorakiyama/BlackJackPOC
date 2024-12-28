@@ -9,17 +9,16 @@ public class CardDeck
     private int currentCard = 0;
     public CardDeck(Random rng)
     {
-        this._rng = rng;
+        _cards = new Card[52];
+        _rng = rng;
+        // initialize the array as a deck of cards
         for (var i = 0; i < 52; i++) _cards[i] = new Card(i, i % 13, i / 13);
     }
-
-
-    public static void myStaticMethod()
-    {
-        return;
-    }
     
     
+    /// <summary>
+    /// Shuffle the deck of cards
+    /// </summary>
     public void Shuffle()
     {
         int  n = _cards.Length;
@@ -31,14 +30,14 @@ public class CardDeck
             Card card = _cards[k];
             _cards[k] = _cards[n];
             _cards[n] = card;
-            // Or even shorter
+            // Or even shorter, but less readable
             // (_cards[k], _cards[n]) = (_cards[n], _cards[k]);
              
         }
     }
 
 
-    public override string ToString()
+    public new string ToString()
     {
         var builder = new StringBuilder();
 
@@ -57,8 +56,6 @@ public class CardDeck
         public int Rank { get; } = rank;
         public int Suit { get; } = suit;
         
-
-
         public override string ToString()
         {
             return Id + "\tR:" + Rank + "\tS:" + Suit;
@@ -77,14 +74,16 @@ public class CardDeck
     public string SuitRankConvert(Card card)
     { 
         string[] suit = new string[] { "S", "H", "D", "C" };
-        string[] rank = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "J", "Q", "K" };
+        string[] rank = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
         string cardSuit = suit[card.Suit];
+
+
+        if (card.Rank < 0 || card.Rank >= rank.Length)
+        {
+             Console.WriteLine($"{card.Suit}\t{card.Rank}\t{card.Suit}");           
+        }
+        
         string cardRank = rank[card.Rank];
         return cardRank + cardSuit;
-
-        
     }
-    
-    
-    
 }
