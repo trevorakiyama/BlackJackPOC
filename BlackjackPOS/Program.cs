@@ -1,4 +1,5 @@
-﻿using BlackjackPOS.DeckOps;
+﻿using System.Diagnostics;
+using BlackjackPOS.DeckOps;
 
 namespace BlackjackPOS;
 
@@ -18,8 +19,6 @@ public static class BlackjackPos
         CardDeck deck = new CardDeck(rnd);
         deck.Shuffle();
         var card = deck.Draw();
-
-        
 
         GameMethods gameMethods =  new GameMethods(deck);
         
