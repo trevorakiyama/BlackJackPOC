@@ -9,13 +9,19 @@ public static class BlackjackPos
     
     static void Main()
     {
+         Random rnd = new Random();
         if (false)
         {
-            CardDeckV2.main2(null);
+                // This could be 
+                    ICardDeck deck2= new CardDeckImpl(rnd, 52);
+                    Console.WriteLine(deck2);
+                    deck2.Shuffle();
+                    
+                    
+                    Console.WriteLine(deck2);
         }
 
-        Random rnd = new Random();
-        
+       
         CardDeck deck = new CardDeck(rnd);
         deck.Shuffle();
         var card = deck.Draw();
