@@ -9,5 +9,9 @@ public interface ICardDeck
     public void AddCard(ICard card);
     
     public void AddCards(List<ICard> cards);
-    
+
+    public int DeckSize();
+
+    public List<ICard> getCards();
+
 }

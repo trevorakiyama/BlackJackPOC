@@ -24,12 +24,17 @@ public class CardDeckImpl : ICardDeck
         _cards = new List<ICard>(cards);
     }
 
-    public CardDeckImpl(Random rng, int cards)
+    /// <summary>
+    /// Creates a New 52 card Deck
+    /// </summary>
+    /// <param name="rng"></param>
+    public CardDeckImpl(Random rng)
     {
+        int cardCount = 52;
         _rng = rng;
-        _cards = new List<ICard>(cards);
+        _cards = new List<ICard>(cardCount);
         // initialize the array as a deck of cards
-        for (var i = 0; i < cards; i++) _cards.Add(new CardV2(i, cardRanks[i % 13], (CardSuit)(i / 13)));
+        for (var i = 0; i < cardCount; i++) _cards.Add(new CardV2(i, cardRanks[i % 13], (CardSuit)(i / 13)));
     }
 
     /// <summary>
@@ -66,19 +71,30 @@ public class CardDeckImpl : ICardDeck
         _cards.AddRange(cards);
     }
 
-    public string SuitRankConvert(CardV2 card)
+    // public string SuitRankConvert(CardV2 card)
+    // {
+    //     string[] suit = new string[] { "S", "H", "D", "C" };
+    //     string[] rank = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+    //     //string cardSuit = suit[card.Suit];
+    //
+    //
+    //     // if (card.Rank < 0 || card.Rank >= rank.Length)
+    //     // {
+    //     // Console.WriteLine($"{card.Suit}\t{card.Rank}\t{card.Suit}");
+    //     var cardRank = card.Rank;
+    //     return cardRank + card.Suit;
+    // }
+    
+    public int DeckSize()
     {
-        string[] suit = new string[] { "S", "H", "D", "C" };
-        string[] rank = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
-        //string cardSuit = suit[card.Suit];
-
-
-        // if (card.Rank < 0 || card.Rank >= rank.Length)
-        // {
-        // Console.WriteLine($"{card.Suit}\t{card.Rank}\t{card.Suit}");
-        var cardRank = card.Rank;
-        return cardRank + card.Suit;
+        return _cards.Count;
     }
+
+    public List<ICard> getCards()
+    {
+        return new List<ICard>(_cards);
+    }
+
 
     public override string ToString()
     {
@@ -103,6 +119,16 @@ public class CardDeckImpl : ICardDeck
         public override string ToString()
         {
             return Id + "\tR:" + Rank + "\tS:" + Suit;
+        }
+
+        public string getRank()
+        {
+            return rank;
+        }
+
+        public string getSuit()
+        {
+            return suit.ToString();
         }
     }
 }

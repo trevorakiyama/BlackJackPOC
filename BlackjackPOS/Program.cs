@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
+using System.Net.Mail;
+using System.Net.Mime;
 using BlackjackPOS.DeckOps;
+using BlackjackPOS.GameState;
 
 namespace BlackjackPOS;
 
@@ -12,15 +15,9 @@ public static class BlackjackPos
          Random rnd = new Random();
         if (false)
         {
-                // This could be 
-                    ICardDeck deck2= new CardDeckImpl(rnd, 52);
-                    Console.WriteLine(deck2);
-                    deck2.Shuffle();
-                    
-                    
-                    Console.WriteLine(deck2);
+                GameLoop game = new GameLoop();
+                game.Run();
         }
-
        
         CardDeck deck = new CardDeck(rnd);
         deck.Shuffle();
