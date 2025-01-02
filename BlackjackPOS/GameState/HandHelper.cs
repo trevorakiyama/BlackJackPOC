@@ -5,6 +5,19 @@ namespace BlackjackPOS.GameState;
 
 public static class HandHelper
 {
+    private static Dictionary<string,int> _valueDict = new Dictionary<string, int>();
+
+    static HandHelper()
+    {
+        string[] cardRanks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+        int[] values = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10];
+
+        for (int i = 0; i < cardRanks.Length; i++)
+        {
+            _valueDict[cardRanks[i]] = values[i];
+        }
+    }
+    
     public static string DisplayCards(ICardDeck? deck, bool hideFirstCard)
     {
         if (deck == null || deck.DeckSize() < 1)
@@ -46,24 +59,19 @@ public static class HandHelper
         foreach (var card in cards)
         {
             var rank = card.GetRank();
+            int val = _valueDict[rank];
+            hand += val;
+            
             if (rank == "A")
             {
                 aceCount++;
-                hand += 11; // Initially consider Ace as 11
-            }
-            else if (rank == "K" || rank == "Q" || rank == "J" || rank == "10")
-            {
-                hand += 10; // Face cards and 10 are worth 10 points
-            }
-            else if (int.TryParse(rank, out var cardValue))
-            {
-                hand += cardValue; // Number cards are worth their face value
             }
         }
-
+        
+        // Adjust if A should be 1 rather than 11
         while (hand > 21 && aceCount > 0)
         {
-            hand -= 10; // Treat one Ace as 1 instead of 11
+            hand -= 10;
             aceCount--;
         }
 
