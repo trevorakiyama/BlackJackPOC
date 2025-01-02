@@ -197,11 +197,13 @@ public class GameLoop(Random rng)
 
     public void DealerTurn()
     {
-        DisplayGameTable(false);
+        
         var dealerVal = HandHelper.CalculateBlackjackHand(_dealerCards);
 
         while (dealerVal <= 21)
         {
+            DisplayGameTable(false);
+            Thread.Sleep(500);
             dealerVal = HandHelper.CalculateBlackjackHand(_dealerCards);
             if (dealerVal >= 17 && dealerVal <= 21)
             {
@@ -212,11 +214,11 @@ public class GameLoop(Random rng)
             }
 
             if (dealerVal < 17)
-            {
-                Console.WriteLine("Dealer Hit");
-                Thread.Sleep(500);
+            { 
                 var card = _deck.Draw();
                 _dealerCards.AddCard(card);
+                Console.WriteLine("Dealer Hit");
+                Thread.Sleep(500);
                 dealerVal = HandHelper.CalculateBlackjackHand(_dealerCards);
 
                 if (dealerVal > 21)

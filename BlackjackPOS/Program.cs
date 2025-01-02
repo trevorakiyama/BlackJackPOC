@@ -10,7 +10,7 @@ public static class BlackjackPos
     static void Main()
     {
          Random rng = new Random();
-        if (false)
+        if (true)
         {
                 GameLoop game = new GameLoop(rng);
                 game.Run();
