@@ -2,6 +2,6 @@
 
 public interface ICard
 {
-    public string getRank();
-    public string getSuit();
+    public string GetRank();
+    public string GetSuit();
 }

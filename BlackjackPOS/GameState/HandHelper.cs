@@ -5,7 +5,7 @@ namespace BlackjackPOS.GameState;
 
 public static class HandHelper
 {
-    public static string DisplayCards(ICardDeck deck, bool hideFirstCard)
+    public static string DisplayCards(ICardDeck? deck, bool hideFirstCard)
     {
         if (deck == null || deck.DeckSize() < 1)
             return "No Cards";
@@ -13,7 +13,7 @@ public static class HandHelper
         var hand = "";
 
         var builder = new StringBuilder();
-        var cards = deck.getCards();
+        var cards = deck.GetCards();
         var first = true;
         foreach (var card in cards)
         {
@@ -24,8 +24,8 @@ public static class HandHelper
             }
             else
             {
-                builder.Append(card.getRank());
-                builder.Append(card.getSuit());
+                builder.Append(card.GetRank())
+                    .Append(card.GetSuit());
             }
 
             builder.Append(" ");
@@ -35,17 +35,17 @@ public static class HandHelper
         return hand;
     }
 
-    public static int CalculateHand(ICardDeck deck)
+    public static int CalculateBlackjackHand(ICardDeck? deck)
     {
         if (deck == null || deck.DeckSize() < 1) return 0;
-        var cards = deck.getCards();
+        var cards = deck.GetCards();
 
         var hand = 0;
         var aceCount = 0;
 
         foreach (var card in cards)
         {
-            var rank = card.getRank();
+            var rank = card.GetRank();
             if (rank == "A")
             {
                 aceCount++;

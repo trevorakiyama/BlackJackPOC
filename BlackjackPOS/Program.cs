@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net.Mail;
-using System.Net.Mime;
-using BlackjackPOS.DeckOps;
+﻿using BlackjackPOS.DeckOps;
 using BlackjackPOS.GameState;
 
 namespace BlackjackPOS;
@@ -12,16 +9,15 @@ public static class BlackjackPos
     
     static void Main()
     {
-         Random rnd = new Random();
+         Random rng = new Random();
         if (false)
         {
-                GameLoop game = new GameLoop();
+                GameLoop game = new GameLoop(rng);
                 game.Run();
         }
        
-        CardDeck deck = new CardDeck(rnd);
+        CardDeck deck = new CardDeck(rng);
         deck.Shuffle();
-        var card = deck.Draw();
 
         GameMethods gameMethods =  new GameMethods(deck);
         

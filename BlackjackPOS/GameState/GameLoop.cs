@@ -2,21 +2,21 @@ using BlackjackPOS.DeckOps;
 
 namespace BlackjackPOS.GameState;
 
-public class GameLoop
+public class GameLoop(Random rng)
 {
-    private readonly Random rng = new();
-    private int cash = 100;
+    private int _playerMoney = 100;
 
-    private int currentBet;
-    private GameStatus CurrentGameState = GameStatus.RefreshDecks;
+    private int _currentBet;
+    private GameStatus _currentGameState = GameStatus.RefreshDecks;
 
-    private ICardDeck dealerCards;
+    private ICardDeck _dealerCards = new CardDeckImpl(rng, new List<ICard>());
+    private ICardDeck _deck = new CardDeckImpl(rng, new List<ICard>());
+    private ICardDeck _playerCards = new CardDeckImpl(rng, new List<ICard>());
+    
+    private int _draws;
+    private int _losses;
 
-    private ICardDeck deck;
-    private int draws;
-    private int losses;
-    private ICardDeck playerCards;
-    private int wins;
+    private int _wins;
 
 
     public void Run()
@@ -24,7 +24,7 @@ public class GameLoop
         var running = true;
 
         while (running)
-            switch (CurrentGameState)
+            switch (_currentGameState)
             {
                 case GameStatus.RefreshDecks:
                     RefreshDecks();
@@ -46,6 +46,7 @@ public class GameLoop
                     break;
                 case GameStatus.Quit:
                     Quit();
+                    running = false;
                     break; // Dumb thing to get the compiler to not whine
             }
 
@@ -57,11 +58,11 @@ public class GameLoop
     public void RefreshDecks()
     {
         DisplayGameTable(true);
-        if (deck == null || deck.DeckSize() < 20)
+        if (_deck == null || _deck.DeckSize() < 20)
         {
             Console.Write("New Deck. Shuffling deck.");
-            deck = new CardDeckImpl(rng);
-            deck.Shuffle();
+            _deck = new CardDeckImpl(rng);
+            _deck.Shuffle();
 
             Thread.Sleep(500);
             Console.Write(".");
@@ -70,22 +71,22 @@ public class GameLoop
             Thread.Sleep(500);
         }
 
-        playerCards = new CardDeckImpl(rng, new List<ICard>());
-        dealerCards = new CardDeckImpl(rng, new List<ICard>());
+        _playerCards = new CardDeckImpl(rng, new List<ICard>());
+        _dealerCards = new CardDeckImpl(rng, new List<ICard>());
 
-        CurrentGameState = GameStatus.PlayerBet;
+        _currentGameState = GameStatus.PlayerBet;
     }
 
 
     public void DisplayGameTable(bool hideDealerCard)
     {
         Console.Clear();
-        Console.WriteLine($"Money: ${cash}\t Wins: {wins}\t Losses: {losses}\t Draws: {draws}");
-        Console.WriteLine($"Current Bet: ${currentBet}");
+        Console.WriteLine($"Money: ${_playerMoney}\t Wins: {_wins}\t Losses: {_losses}\t Draws: {_draws}");
+        Console.WriteLine($"Current Bet: ${_currentBet}");
         Console.WriteLine("Dealers Cards:");
-        Console.WriteLine(HandHelper.DisplayCards(dealerCards, hideDealerCard));
+        Console.WriteLine(HandHelper.DisplayCards(_dealerCards, hideDealerCard));
         Console.WriteLine("Players Cards:");
-        Console.WriteLine(HandHelper.DisplayCards(playerCards, false));
+        Console.WriteLine(HandHelper.DisplayCards(_playerCards, false));
         Console.WriteLine("");
     }
 
@@ -93,50 +94,60 @@ public class GameLoop
     public void PlayerBet()
     {
         DisplayGameTable(true);
-        Console.Write("How much would you like to bet?\n");
 
-        string betString;
+
+        string? betString;
         var bet = 0;
-        var validFormat = false;
+        var validBet = false;
 
-        while (validFormat == false)
+        while (validBet == false)
         {
+            Console.Write("How much would you like to bet?\n");
             betString = Console.ReadLine();
             try
             {
-                bet = int.Parse(betString);
-                validFormat = true;
+                if (betString != null) bet = int.Parse(betString);
+                validBet = true;
             }
-            catch (FormatException fe)
+            catch (FormatException)
             {
                 Console.WriteLine("Please Enter a valid number");
             }
+
+            if (validBet)
+            {
+                if (bet > _playerMoney)
+                {
+                    Console.WriteLine("You do not have enough money.");
+                    validBet = false;
+                }
+            }
         }
 
-        currentBet = bet;
-        cash -= bet;
-        CurrentGameState = GameStatus.FirstDeal;
+        _currentBet = bet;
+        _playerMoney -= bet;
+        _currentGameState = GameStatus.FirstDeal;
     }
 
     public void FirstDeal()
     {
         DisplayGameTable(true);
-        var card = deck.Draw();
-        dealerCards.AddCard(card);
+        var card = _deck.Draw();
+        _dealerCards.AddCard(card);
         Thread.Sleep(500);
         DisplayGameTable(true);
-        card = deck.Draw();
-        dealerCards.AddCard(card);
+        card = _deck.Draw();
+        _dealerCards.AddCard(card);
         Thread.Sleep(500);
         DisplayGameTable(true);
-        card = deck.Draw();
-        playerCards.AddCard(card);
+        card = _deck.Draw();
+        _playerCards.AddCard(card);
         Thread.Sleep(500);
         DisplayGameTable(true);
-        card = deck.Draw();
-        playerCards.AddCard(card);
+        card = _deck.Draw();
+        _playerCards.AddCard(card);
         Thread.Sleep(500);
-        CurrentGameState = GameStatus.PlayerTurn;
+        _currentGameState = GameStatus.PlayerTurn;
     }
 
 
@@ -159,17 +170,17 @@ public class GameLoop
             {
                 Console.WriteLine("Hit!");
                 Thread.Sleep(500);
-                var card = deck.Draw();
-                playerCards.AddCard(card);
+                var card = _deck.Draw();
+                _playerCards.AddCard(card);
 
-                var total = HandHelper.CalculateHand(playerCards);
+                var total = HandHelper.CalculateBlackjackHand(_playerCards);
 
                 if (total > 21)
                 {
                     DisplayGameTable(false);
                     Console.WriteLine("Busted!");
                     Thread.Sleep(1000);
-                    CurrentGameState = GameStatus.Resolve;
+                    _currentGameState = GameStatus.Resolve;
                     break;
                 }
             }
@@ -178,7 +189,7 @@ public class GameLoop
                 // Go to Dealer turn
                 Console.WriteLine("Stand");
                 Thread.Sleep(500);
-                CurrentGameState = GameStatus.DealerTurn;
+                _currentGameState = GameStatus.DealerTurn;
                 break;
             }
         }
@@ -187,16 +198,16 @@ public class GameLoop
     public void DealerTurn()
     {
         DisplayGameTable(false);
-        var dealerVal = HandHelper.CalculateHand(dealerCards);
+        var dealerVal = HandHelper.CalculateBlackjackHand(_dealerCards);
 
         while (dealerVal <= 21)
         {
-            dealerVal = HandHelper.CalculateHand(dealerCards);
+            dealerVal = HandHelper.CalculateBlackjackHand(_dealerCards);
             if (dealerVal >= 17 && dealerVal <= 21)
             {
                 Console.WriteLine("Dealer Stand");
                 Thread.Sleep(500);
-                CurrentGameState = GameStatus.Resolve;
+                _currentGameState = GameStatus.Resolve;
                 break;
             }
 
@@ -204,15 +215,15 @@ public class GameLoop
             {
                 Console.WriteLine("Dealer Hit");
                 Thread.Sleep(500);
-                var card = deck.Draw();
-                dealerCards.AddCard(card);
-                dealerVal = HandHelper.CalculateHand(dealerCards);
+                var card = _deck.Draw();
+                _dealerCards.AddCard(card);
+                dealerVal = HandHelper.CalculateBlackjackHand(_dealerCards);
 
                 if (dealerVal > 21)
                 {
                     Console.WriteLine("Dealer Busts!");
                     Thread.Sleep(500);
-                    CurrentGameState = GameStatus.Resolve;
+                    _currentGameState = GameStatus.Resolve;
                     break;
                 }
             }
@@ -223,13 +234,13 @@ public class GameLoop
     {
         DisplayGameTable(false);
 
-        var dealer = HandHelper.CalculateHand(dealerCards);
-        var player = HandHelper.CalculateHand(playerCards);
+        var dealer = HandHelper.CalculateBlackjackHand(_dealerCards);
+        var player = HandHelper.CalculateBlackjackHand(_playerCards);
 
         if (player > 21
             || (dealer <= 21 && player < dealer))
         {
-            losses++;
+            _losses++;
             DisplayGameTable(false);
             Console.WriteLine("Player Loses!");
         }
@@ -237,27 +248,35 @@ public class GameLoop
         if (dealer > 21
             || (player <= 21 && player > dealer))
         {
-            wins++;
-            cash += currentBet * 2;
+            _wins++;
+            _playerMoney += _currentBet * 2;
             DisplayGameTable(false);
             Console.WriteLine("Player Wins!");
         }
 
         if (player == dealer)
         {
-            draws++;
-            cash += currentBet;
+            _draws++;
+            _playerMoney += _currentBet;
             DisplayGameTable(false);
             Console.WriteLine("Push");
         }
 
-        Console.WriteLine("press any key to play again.  Q to quit");
-        var key = Console.ReadKey(true).KeyChar;
-
-        if (key == 'q' || key == 'Q')
-            CurrentGameState = GameStatus.Quit;
+        if (_playerMoney <= 0)
+        {
+            Console.WriteLine("You are Bankrupt!\nGame Over!");
+            _currentGameState = GameStatus.Quit;
+        }
         else
-            CurrentGameState = GameStatus.RefreshDecks;
+        {
+            Console.WriteLine("press any key to play again.  Q to quit");
+            var key = Console.ReadKey(true).KeyChar;
+
+            if (key == 'q' || key == 'Q')
+                _currentGameState = GameStatus.Quit;
+            else
+                _currentGameState = GameStatus.RefreshDecks;
+        }
     }
 
 

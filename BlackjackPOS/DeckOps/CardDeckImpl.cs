@@ -4,8 +4,7 @@ namespace BlackjackPOS.DeckOps;
 
 public class CardDeckImpl : ICardDeck
 {
-    private readonly string[] cardRanks = new string[]
-        { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+    private readonly string[] _cardRanks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 
     public enum CardSuit
     {
@@ -34,7 +33,7 @@ public class CardDeckImpl : ICardDeck
         _rng = rng;
         _cards = new List<ICard>(cardCount);
         // initialize the array as a deck of cards
-        for (var i = 0; i < cardCount; i++) _cards.Add(new CardV2(i, cardRanks[i % 13], (CardSuit)(i / 13)));
+        for (var i = 0; i < cardCount; i++) _cards.Add(new CardV2(i, _cardRanks[i % 13], (CardSuit)(i / 13)));
     }
 
     /// <summary>
@@ -90,7 +89,7 @@ public class CardDeckImpl : ICardDeck
         return _cards.Count;
     }
 
-    public List<ICard> getCards()
+    public List<ICard> GetCards()
     {
         return new List<ICard>(_cards);
     }
@@ -121,14 +120,14 @@ public class CardDeckImpl : ICardDeck
             return Id + "\tR:" + Rank + "\tS:" + Suit;
         }
 
-        public string getRank()
+        public string GetRank()
         {
-            return rank;
+            return Rank;
         }
 
-        public string getSuit()
+        public string GetSuit()
         {
-            return suit.ToString();
+            return Suit.ToString();
         }
     }
 }

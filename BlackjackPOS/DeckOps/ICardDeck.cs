@@ -12,6 +12,6 @@ public interface ICardDeck
 
     public int DeckSize();
 
-    public List<ICard> getCards();
+    public List<ICard> GetCards();
 
 }

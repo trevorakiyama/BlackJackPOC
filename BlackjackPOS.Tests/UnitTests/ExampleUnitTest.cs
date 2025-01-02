@@ -9,7 +9,7 @@ public class ExampleUnitTest
     [Test]
     public void SimpleTestMethod()
     {
-        int TestObject = 4;
-        TestObject.Should().Be(4);
+        int testObject = 4;
+        testObject.Should().Be(4);
     }
 }

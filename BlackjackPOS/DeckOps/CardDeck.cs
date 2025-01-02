@@ -4,9 +4,9 @@ namespace BlackjackPOS.DeckOps;
 
 public class CardDeck
 {
-    private readonly Card[] _cards = new Card[52];
+    private readonly Card[] _cards;
     private readonly Random _rng;
-    private int currentCard = 0;
+    private int _currentCard;
     public CardDeck(Random rng)
     {
         _cards = new Card[52];
@@ -64,17 +64,17 @@ public class CardDeck
 
     public Card Draw()
     {
-        if (currentCard >= _cards.Length)
+        if (_currentCard >= _cards.Length)
         {
             return null;            
         }
-        return _cards[currentCard++];
+        return _cards[_currentCard++];
     }
 
     public string SuitRankConvert(Card card)
     { 
-        string[] suit = new string[] { "S", "H", "D", "C" };
-        string[] rank = new string[] { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
+        string[] suit = ["S", "H", "D", "C"];
+        string[] rank = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         string cardSuit = suit[card.Suit];
 
 

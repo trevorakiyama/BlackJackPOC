@@ -6,8 +6,8 @@ public class GameMethods
     public int PlayerScore;
     public int Kitty;
     CardDeck _deck;
-    public List<string> cards = new List<string>();
-    public List<string> dealerCards = new List<string>();
+    public List<string> Cards = new List<string>();
+    public List<string> DealerCards = new List<string>();
     
 
     public GameMethods (CardDeck cardDeck)
@@ -26,22 +26,22 @@ public class GameMethods
         var dealer = _deck.Draw();
         var dealer2 = _deck.Draw();
         DealerScore = dealer.Rank + dealer2.Rank; 
-        dealerCards.Add(_deck.SuitRankConvert(dealer));
-        dealerCards.Add(_deck.SuitRankConvert(dealer2));
+        DealerCards.Add(_deck.SuitRankConvert(dealer));
+        DealerCards.Add(_deck.SuitRankConvert(dealer2));
         
         
         var card1 = _deck.Draw();
         var card2 = _deck.Draw();
-        cards.Add(_deck.SuitRankConvert(card1));
-        cards.Add(_deck.SuitRankConvert(card2));
+        Cards.Add(_deck.SuitRankConvert(card1));
+        Cards.Add(_deck.SuitRankConvert(card2));
         PlayerScore = card1.Rank + card2.Rank;
 
         Console.WriteLine("Dealer's Cards: ");
         Console.WriteLine(_deck.SuitRankConvert(dealer) + " | ?");
         Console.WriteLine("Your cards are:");
-        for (int i = 0; i < cards.Count; i++)
+        for (int i = 0; i < Cards.Count; i++)
         {
-            Console.Write(cards[i] + " ");
+            Console.Write(Cards[i] + " ");
         }
         Console.WriteLine();
         Console.WriteLine("HIT or STAND?");
@@ -59,18 +59,18 @@ public class GameMethods
     public void Hit()
     {
         Console.WriteLine("Dealer's Cards: ");
-        Console.WriteLine(dealerCards[0] + " | ?");
+        Console.WriteLine(DealerCards[0] + " | ?");
         
         
         var card1 = _deck.Draw();
-        cards.Add(_deck.SuitRankConvert(card1));
+        Cards.Add(_deck.SuitRankConvert(card1));
 
         PlayerScore = card1.Rank + PlayerScore;
         
         Console.WriteLine("Your cards are:");
-        for (int i = 0; i < cards.Count; i++)
+        for (int i = 0; i < Cards.Count; i++)
         {
-            Console.Write(cards[i] + " ");
+            Console.Write(Cards[i] + " ");
         }
         if (PlayerScore <= 21)
         {
@@ -96,7 +96,7 @@ public class GameMethods
             Console.WriteLine("Try again? y/n");
             if (Console.ReadLine() == "y" || Console.ReadLine() == "yes")
             {
-                cards.Clear();
+                Cards.Clear();
                 Start();
             }
             else 
@@ -116,13 +116,13 @@ public class GameMethods
     public void Stand()
     {
         var dealerCard = _deck.Draw();
-        dealerCards.Add(_deck.SuitRankConvert(dealerCard));
+        DealerCards.Add(_deck.SuitRankConvert(dealerCard));
         DealerScore = DealerScore + dealerCard.Rank;
         
         Console.WriteLine("Dealer's Cards: ");
-        for (int i = 0; i < dealerCards.Count; i++)
+        for (int i = 0; i < DealerCards.Count; i++)
         {
-            Console.Write(dealerCards[i] + " ");
+            Console.Write(DealerCards[i] + " ");
         }
         
         if (PlayerScore <= DealerScore)
